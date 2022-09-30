@@ -1,6 +1,6 @@
-# comby-search README
+# comby-search
 
-This is the README for your extension "comby-search". After writing up a brief description, we recommend including the following sections.
+Run [comby](https://comby.dev/) searches from within vscode
 
 ## Features
 
