@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 
 import CombyResultsDataProvider, { MatchTreeItem } from './comby_results_data_provider';
+import { getCombyLanguage } from './utils';
 
 export function activate(context: vscode.ExtensionContext) {
 	let dataProvider = new CombyResultsDataProvider();
@@ -11,6 +12,8 @@ export function activate(context: vscode.ExtensionContext) {
 			title: "Enter Comby Search",
 			value: lastSearchedCommand
 		}).then((res) => {
+			vscode.window.activeTextEditor?.document.fileName
+
 			if (res) {
 				vscode.window.withProgress(
 					{ 
@@ -18,13 +21,24 @@ export function activate(context: vscode.ExtensionContext) {
 						title: 'Running Comby Search'
 					}, 
 					async (progress) => {
-						await dataProvider.runCombySearch(res);
+						await dataProvider.runCombySearch(res, getCombyLanguage());
 						lastSearchedCommand = res;
 					}
 				);
 			}
 		})
 	});
+
+	// let disposable2 = vscode.commands.registerCommand('comby-search.setLanguage', () => {
+	// 	vscode.window.showInputBox({
+	// 		title: "Enter Language for Comby",
+	// 		value: dataProvider.language,
+	// 	}).then((res) => {
+	// 		if (res) {
+	// 			dataProvider.language = res
+	// 		}
+	// 	})
+	// });
 
 	vscode.commands.registerCommand('comby-search.gotoMatch', (node: MatchTreeItem) => {
 		const path = vscode.Uri.file(node.filePath)
@@ -45,6 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.registerTreeDataProvider('comby-search-view', dataProvider)
 
 	context.subscriptions.push(disposable);
+	// context.subscriptions.push(disposable2);
 }
 
 // this method is called when your extension is deactivated

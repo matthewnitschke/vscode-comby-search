@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { basename } from 'path';
-import { ChildProcess, exec, ExecException } from "child_process";
+import { exec } from "child_process";
 
 export default class CombyResultsDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
   private _onDidChangeTreeData = new vscode.EventEmitter<vscode.TreeItem | undefined | null | void>();
@@ -16,7 +16,7 @@ export default class CombyResultsDataProvider implements vscode.TreeDataProvider
     this._onDidChangeTreeData.fire();
   }
 
-  async runCombySearch(combyStr: string) {
+  async runCombySearch(combyStr: string, language: string) {
     if (vscode.workspace.workspaceFolders) {
       this.data = []
       this.refresh();
@@ -29,7 +29,7 @@ export default class CombyResultsDataProvider implements vscode.TreeDataProvider
       let output: CombyFileMatch[] = lines.map((line) => JSON.parse(line));
       
       this.data = [
-        new CommandTreeItem(combyStr),
+        new CommandTreeItem(combyStr, language),
 
         ...output.map((fileMatch) => new FileTreeItem(
           fileMatch.uri,
@@ -77,13 +77,16 @@ export default class CombyResultsDataProvider implements vscode.TreeDataProvider
 }
 
 class CommandTreeItem extends vscode.TreeItem {
-  constructor(combyCommand: string) {
-    super(combyCommand, vscode.TreeItemCollapsibleState.Collapsed)
-  }
+  children: vscode.TreeItem[];
 
-  children = [
-    new EditCommandTreeItem()
-  ]
+  constructor(combyCommand: string, language: string) {
+    super(combyCommand, vscode.TreeItemCollapsibleState.Collapsed)
+
+    this.children = [
+      new EditCommandTreeItem(),
+      new EditLanguageTreeItem(language),
+    ]
+  }
 
   iconPath = new vscode.ThemeIcon("terminal")
 }
@@ -102,14 +105,28 @@ class EditCommandTreeItem extends vscode.TreeItem {
   iconPath = new vscode.ThemeIcon("edit")
 }
 
+class EditLanguageTreeItem extends vscode.TreeItem {
+  constructor(language: string) {
+    super('Current Language', vscode.TreeItemCollapsibleState.None)
+    this.description = language
+  }
+
+  iconPath = new vscode.ThemeIcon("file")
+}
+
 class FileTreeItem extends vscode.TreeItem {
   children: MatchTreeItem[]|undefined;
 
   constructor(filePath: string, children?: MatchTreeItem[]) {
-    super(vscode.Uri.file(filePath), children === undefined ? vscode.TreeItemCollapsibleState.None :
+    let fileUri = vscode.Uri.file(filePath)
+    super(fileUri, children === undefined ? vscode.TreeItemCollapsibleState.None :
       vscode.TreeItemCollapsibleState.Expanded);
 
     this.children = children;
+
+    let base = basename(filePath);
+    let workspaceFolderPath = vscode.workspace.getWorkspaceFolder(fileUri)?.uri.fsPath ?? '';
+    this.description = filePath.substring(workspaceFolderPath.length+1, (filePath.length-1) - base.length);
   }
 
   iconPath = vscode.ThemeIcon.File;
