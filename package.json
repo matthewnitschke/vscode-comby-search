@@ -1,18 +1,20 @@
 {
-  "name": "comby-search",
+  "name": "vscode-comby-search",
   "displayName": "comby-search",
-  "description": "",
+  "description": "Run comby searches within vscode",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.71.0"
   },
-  "categories": [
-    "Other"
-  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matthewnitschke/vscode-comby-search"
+  },
   "activationEvents": [
     "onCommand:comby-search.startSearch",
     "onView:comby-search-view"
   ],
+  "icon": "images/comby-search.png",
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
