@@ -32,7 +32,13 @@
           "contextualTitle": "Comby"
         }
       ]
-    }
+    },
+    "viewsWelcome": [
+      {
+        "view": "comby-search-view",
+        "contents": "No search results\n[Run Comby Search](command:comby-search.startSearch)\nLearn about the comby search syntax [here](https://comby.dev/docs/basic-usage)"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

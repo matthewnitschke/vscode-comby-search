@@ -29,17 +29,6 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	});
 
-	// let disposable2 = vscode.commands.registerCommand('comby-search.setLanguage', () => {
-	// 	vscode.window.showInputBox({
-	// 		title: "Enter Language for Comby",
-	// 		value: dataProvider.language,
-	// 	}).then((res) => {
-	// 		if (res) {
-	// 			dataProvider.language = res
-	// 		}
-	// 	})
-	// });
-
 	vscode.commands.registerCommand('comby-search.gotoMatch', (node: MatchTreeItem) => {
 		const path = vscode.Uri.file(node.filePath)
 
