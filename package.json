@@ -2,7 +2,7 @@
   "name": "vscode-comby-search",
   "displayName": "Comby Search",
   "description": "Run comby searches within vscode",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "matthew-nitschke",
   "engines": {
     "vscode": "^1.71.0"
